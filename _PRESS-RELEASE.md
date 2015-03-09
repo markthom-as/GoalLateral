@@ -17,28 +17,37 @@ Once the project moves into development, the press release can be used as a touc
  -->
  
 ## Heading ##
+Goallateral
   > Name the product in a way the reader (i.e. your target customers) will understand.
 
 ## Sub-Heading ##
+Meet your goals, or face your own punishment.
   > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
 
 ## Summary ##
+Users create goals, set a deadline, and upload a bad selfie as collateral. If the user fails to meet the deadline, the selfie is posted to social media along with the goal they didn't meet.
   > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
 
 ## Problem ##
+Solves the problem of procrastination, lack of motivation.
   > Describe the problem your product solves.
 
 ## Solution ##
+Creates incentive for people to meet their goals
   > Describe how your product elegantly solves the problem.
 
 ## Quote from You ##
+'Self-determined punishment is an effective way to motivate oneself without too much of a negative impact'
   > A quote from a spokesperson in your company.
 
 ## How to Get Started ##
+Just make a goal and upload a gross selfie today!
   > Describe how easy it is to get started.
 
 ## Customer Quote ##
+'I have lost 50lbs because I look so bad in selfies - now I look better, and feel great. Thanks Goallateral!'
   > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
 
 ## Closing and Call to Action ##
+visit goallateral.com right now to signup!
   > Wrap it up and give pointers where the reader should go next.
