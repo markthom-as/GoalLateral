@@ -1,8 +1,12 @@
 <div ng-controller='goalsController'>
   <h1>Goals:</h1>
+  {{goals}}
   <div ng-repeat="goal in goals">
-    <h3>{{title}}</h3>
-    <span class="goal-details">{{goalDetails}}</span>
-    <span class="due-date">{{dueDate}}</span>
+    <h3>{{goal.title}}</h3>
+
+    <span class="goal-details">{{goal.description}}</span>
+    <span class="due-date">{{goal.dueDate}}</span>
+    <span class="due-date">{{goal.dueTime}}</span>
+    <span class="due-date"><img></span>
   </div>
 </div>

@@ -1,7 +1,8 @@
 var app = angular.module('goalLateralApp', [
   'ngRoute',
   'firebase', 
-  'ngMaterial'
+  'ngMaterial',
+  'omr.directives'
   ]);
 
 app.run(function($rootScope, $location, $firebase){
@@ -34,13 +35,13 @@ app.config(['$routeProvider', function($routeProvider){
       templateUrl: 'partials/goals.html',
       controller: 'goalsController'
     }).
-    when('/goals/:goalID', {
-      templateUrl: 'partials/goalDetails.html',
-      controller: 'goalController'
-    }).
     when('/goals/create', {
       templateUrl: 'partials/createGoal.html',
       controller: 'createGoalController'
+    }).
+    when('/goals/details/:goalID', {
+      templateUrl: 'partials/goalDetails.html',
+      controller: 'goalController'
     }).
     otherwise({redirectTo: '/'});
 }]);
@@ -52,9 +53,15 @@ app.controller('mainController', function($scope, $firebase){
 
 });
 
-app.controller('goalsController', function($scope, $firebase){
-  var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/goals');
-  var fb = $firebase(ref);
+app.controller('goalsController', function($scope, $firebase, $rootScope){
+  var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
+  var userGoals = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals/');
+  userGoals.on('value', function(data) {
+    $scope.goals = data.val();
+    console.log(data.val())
+    })
+
+
 
 });
 
@@ -64,9 +71,24 @@ app.controller('goalController', function($scope, $firebase){
 
 });
 
-app.controller('createGoalController', function($scope, $firebase){
-  var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/goals');
-  var fb = $firebase(ref);
+app.controller('createGoalController', function($scope, $firebase, $location, $rootScope){
+  $scope.newGoal = {
+    title: '',
+    dueDate: '',
+    dueTime: '',
+    description: '',
+    image: ''
+  }
+  var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
+  var userRef = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals');
+  $scope.saveGoal = function(media){
+    if(!$scope.newGoal.image) return;
+    $scope.newGoal.createdAt = Date.now();
+    userRef.push($scope.newGoal);
+          $rootScope.$apply(function() {
+            $location.path("/goals");
+          }); 
+  };
 
 });
 
@@ -84,12 +106,12 @@ app.controller('authCtrl', function($scope, $firebase, $location, $rootScope) {
               console.log('User Found');
             }, function(err){
                 usersRef.child(authData.uid).set({
-                  goals: 0
+                  goals: {}
                 });
               console.log(err);
             })
               
-
+          localStorage.authData = authData;
 
           $rootScope.$apply(function() {
             $location.path("/goals");
