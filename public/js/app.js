@@ -56,7 +56,7 @@ app.controller('mainController', function($scope, $firebase){
 
 });
 
-app.controller('goalsController', function($scope, $firebase, $rootScope, $location){
+app.controller('goalsController', function($scope, $firebase, $rootScope, $location, $route){
   $scope.goals = [];
   var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
   var userGoals = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals/');
@@ -72,8 +72,8 @@ app.controller('goalsController', function($scope, $firebase, $rootScope, $locat
   $scope.deleteGoal = function(goal){
     var removing = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals/'+goal.key);
     removing.remove();
-    $scope.$apply();
-    $location.path('/');
+    //$scope.$apply();
+    $route.reload();
 
   }
 
@@ -109,13 +109,13 @@ app.controller('createGoalController', function($scope, $firebase, $location, $r
     userRef.push($scope.newGoal);
           $rootScope.$apply(function() {
             console.log(ref.getAuth().facebook)
-            FB.api('/me/feed', post, {message: body}, function(response){
-              if(!response || response.error){
-                console.log('Error', response.error)
-              }else{
-                console.log(response.id)
-              }
-            })
+            // FB.api('/me/feed', post, {message: body}, function(response){
+            //   if(!response || response.error){
+            //     console.log('Error', response.error)
+            //   }else{
+            //     console.log(response.id)
+            //   }
+            // })
             $location.path("/goals");
           }); 
   };
@@ -153,7 +153,7 @@ app.controller('authCtrl', function($scope, $firebase, $location, $rootScope) {
 
 });
 
-app.controller('menuController', function($scope, $firebase, $location, $rootScope){
+app.controller('menuController', function($scope, $firebase, $location, $rootScope, $route){
 
   var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
   if(ref.getAuth() && ref.getAuth().facebook !== undefined){
@@ -167,7 +167,7 @@ app.controller('menuController', function($scope, $firebase, $location, $rootSco
       $scope.login();
     }else{
       ref.unauth();
-      $location.path('/');
+      $route.reload();
     }
   };
 
@@ -191,6 +191,7 @@ app.controller('menuController', function($scope, $firebase, $location, $rootSco
 
           $rootScope.$apply(function() {
             $location.path("/goals");
+            $route.reload();
           });
         }
       }, {scope: "publish_actions, public_profile"});
