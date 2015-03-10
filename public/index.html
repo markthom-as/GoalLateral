@@ -21,7 +21,23 @@
 </head>
 
     <body ng-app="goalLateralApp">
-    <div ng-view></div>
+    <div layout="column" layout-fill>
+  <md-toolbar>
+    <div class="md-toolbar-tools" ng-controller="menuController">
+      <span>GoalLateral</span>
+      <!-- fill up the space between left and right area -->
+      <span flex></span>
+      <md-button ng-click="logout()">
+        {{name}}
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-content>
+    <div ng-view>
+    </div>
+  </md-content>
+</div>
+    
     
     </body>
 </html>

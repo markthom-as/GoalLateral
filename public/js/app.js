@@ -7,7 +7,6 @@ var app = angular.module('goalLateralApp', [
 
 app.run(function($rootScope, $location, $firebase){
       var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
-      var usersRef = ref.child("users");
       var pubRoutes = ['/'];
       var routeClean = function (route) {
         return _.find(pubRoutes,
@@ -21,6 +20,10 @@ app.run(function($rootScope, $location, $firebase){
         // }
         if ($location.path !== '/' && !ref.getAuth()) {
           $location.path('/');
+        }
+        console.log($location.path() === '/' );
+        if($location.path() === '/' && ref.getAuth() ){
+          $location.path('/goals')
         }
       });  
   });
@@ -53,13 +56,32 @@ app.controller('mainController', function($scope, $firebase){
 
 });
 
-app.controller('goalsController', function($scope, $firebase, $rootScope){
+app.controller('goalsController', function($scope, $firebase, $rootScope, $location){
+  $scope.goals = [];
   var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
   var userGoals = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals/');
   userGoals.on('value', function(data) {
-    $scope.goals = data.val();
-    console.log(data.val())
+    var bunch = data.val()
+    for(var goal in bunch){
+      bunch[goal].key = goal;
+      $scope.goals.push(bunch[goal]);
+    }
+    $scope.$apply();
     })
+
+  $scope.deleteGoal = function(goal){
+    console.log(goal.key);
+    var removing = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals/'+goal.key);
+    removing.remove();
+    //$scope.$apply();
+    $location.path('/goals');
+
+  }
+
+  $scope.newGoal = function(){
+    $location.path("/goals/create");
+  }
+
 
 
 
@@ -81,6 +103,7 @@ app.controller('createGoalController', function($scope, $firebase, $location, $r
   }
   var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
   var userRef = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals');
+
   $scope.saveGoal = function(media){
     if(!$scope.newGoal.image) return;
     $scope.newGoal.createdAt = Date.now();
@@ -121,4 +144,47 @@ app.controller('authCtrl', function($scope, $firebase, $location, $rootScope) {
     }
 
 
+});
+
+app.controller('menuController', function($scope, $firebase, $location, $rootScope){
+
+  var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
+  if(ref.getAuth() && ref.getAuth().facebook !== undefined){
+    $scope.name = "Logout " + ref.getAuth().facebook.cachedUserProfile.first_name;
+  }else{
+    $scope.name = 'Login';
+  }
+  
+  $scope.logout = function(){
+    if($scope.name === 'Login'){
+      $scope.login();
+    }else{
+      ref.unauth();
+    }
+  };
+
+    $scope.login = function(){
+      ref.authWithOAuthPopup("facebook", function(error, authData) {
+        if (error) {
+          console.log("Login Failed!", error);
+        } else {
+          console.log("Authenticated successfully with payload:", authData);
+            var user = new Firebase('https://blinding-torch-8725.firebaseio.com/users/' + authData.uid)
+            user.once('value', function(snap){
+              console.log('User Found');
+            }, function(err){
+                usersRef.child(authData.uid).set({
+                  goals: {}
+                });
+              console.log(err);
+            })
+              
+          localStorage.authData = authData;
+
+          $rootScope.$apply(function() {
+            $location.path("/goals");
+          });
+        }
+      }, {scope: "publish_actions, public_profile"});
+    }
 });

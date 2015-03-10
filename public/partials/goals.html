@@ -1,12 +1,15 @@
 <div ng-controller='goalsController'>
+  <md-content class="md-padding">
   <h1>Goals:</h1>
-  {{goals}}
-  <div ng-repeat="goal in goals">
+  <md-button class="md-button md-raised md-primary md-default" ng-click="newGoal()">Add Goal</md-button>
+  <div ng-repeat="goal in goals" class="goal">
     <h3>{{goal.title}}</h3>
-
-    <span class="goal-details">{{goal.description}}</span>
     <span class="due-date">{{goal.dueDate}}</span>
-    <span class="due-date">{{goal.dueTime}}</span>
-    <span class="due-date"><img></span>
+    <span class="due-time">{{goal.dueTime}}</span>
+    <span class="goal-description">{{goal.description}}</span>
+    <span class="goal-image"><img ng-src='{{goal.image}}'></span>
+    <md-button class="md-button md-raised md-primary md-default" ng-click="editGoal(goal)">Edit Goal</md-button>
+    <md-button class="md-button md-raised md-primary md-default"ng-click="deleteGoal(goal)">Delete Goal</md-button>
   </div>
+  </md-content>
 </div>
