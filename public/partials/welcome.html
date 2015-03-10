@@ -1,8 +1,9 @@
-<div ng-controller="mainController">
+<div ng-controller="mainController" class="welcome">
     <mod-content>
-        <section class='login' layout="row">
+        <section class='login' layout="row" layout-align="center">
             <div ng-controller="authCtrl" class="login" ngShow="auth">
-                <h1>GoalLateral</h1>
+                <h1 class="mainHeader">GoalLateral</h1>
+                <span class="iconicstroke-check-alt"></span>
                 <h4>Start Making Goals Today</h4>
                 <md-button ng-click="login()" class="md-raised md-primary md-button md-default-theme">Log In With Facebook</md-button>
             </div>

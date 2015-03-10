@@ -1,1 +1,33 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,300);
 
+@import url(http://weloveiconfonts.com/api/?family=iconicstroke);
+
+/* iconicstroke */
+[class*="iconicstroke-"]:before {
+  font-family: 'IconicStroke', sans-serif;
+}
+
+html, h1, h3{
+  font-family: roboto;
+  font-weight: 100!important;
+}
+
+.main{
+  margin: 0 auto;
+  padding: 30px;
+  width: 75%;
+  text-align: center;
+}
+
+.welcome{
+  text-align: center;
+  margin: 0 auto;
+};
+
+.login{
+  margin: 0 auto;
+}
+
+.mainHeader{
+  font-size: 50px;
+}

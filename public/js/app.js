@@ -70,11 +70,10 @@ app.controller('goalsController', function($scope, $firebase, $rootScope, $locat
     })
 
   $scope.deleteGoal = function(goal){
-    console.log(goal.key);
     var removing = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals/'+goal.key);
     removing.remove();
-    //$scope.$apply();
-    $location.path('/goals');
+    $scope.$apply();
+    $location.path('/');
 
   }
 
@@ -93,7 +92,7 @@ app.controller('goalController', function($scope, $firebase){
 
 });
 
-app.controller('createGoalController', function($scope, $firebase, $location, $rootScope){
+app.controller('createGoalController', function($scope, $firebase, $location, $rootScope, $http){
   $scope.newGoal = {
     title: '',
     dueDate: '',
@@ -109,6 +108,14 @@ app.controller('createGoalController', function($scope, $firebase, $location, $r
     $scope.newGoal.createdAt = Date.now();
     userRef.push($scope.newGoal);
           $rootScope.$apply(function() {
+            console.log(ref.getAuth().facebook)
+            FB.api('/me/feed', post, {message: body}, function(response){
+              if(!response || response.error){
+                console.log('Error', response.error)
+              }else{
+                console.log(response.id)
+              }
+            })
             $location.path("/goals");
           }); 
   };
@@ -160,6 +167,7 @@ app.controller('menuController', function($scope, $firebase, $location, $rootSco
       $scope.login();
     }else{
       ref.unauth();
+      $location.path('/');
     }
   };
 
