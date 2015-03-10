@@ -3,7 +3,7 @@
   <h1>Goals:</h1>
   <md-button class="md-button md-raised md-primary md-default" ng-click="newGoal()">Add Goal</md-button>
 
-  <div ng-repeat="goal in goals" class="goal">
+  <div ng-repeat="goal in goals | filter:{ complete: false}" class="goal">
   <md-card>
     <img ng-src='{{goal.image}}'>
     <md-card-content>
@@ -13,6 +13,19 @@
       <span class="goal-description">{{goal.description}}</span> <br><br>
       <md-button class="md-button md-raised md-accent md-default"ng-click="complete(goal)">Mark as Complete</md-button>
       <md-button class="md-button md-raised md-primary md-default" ng-click="editGoal(goal)">Edit Goal</md-button>
+      <md-button class="md-button md-raised md-warn md-default"ng-click="deleteGoal(goal)">Delete Goal</md-button>
+      </md-card-content>
+    </md-card>
+  </div>
+    <h1>Completed Goals:</h1>
+    <div ng-repeat="goal in goals | filter:{ complete: true}" class="goal" style="opacity: 0.5">
+  <md-card>
+    <img ng-src='{{goal.image}}'>
+    <md-card-content>
+      <h2>{{goal.title}}</h2>
+      <span class="due-date">{{goal.dueDate}}</span>
+      <span class="due-time">{{goal.dueTime}}</span>
+      <span class="goal-description">{{goal.description}}</span> <br><br>
       <md-button class="md-button md-raised md-warn md-default"ng-click="deleteGoal(goal)">Delete Goal</md-button>
       </md-card-content>
     </md-card>

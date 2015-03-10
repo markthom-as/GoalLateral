@@ -81,6 +81,12 @@ app.controller('goalsController', function($scope, $firebase, $rootScope, $locat
     $location.path("/goals/create");
   }
 
+  $scope.complete = function(goal){
+    var completed = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals/'+goal.key+'/complete');
+    completed.set(true);
+    $route.reload();
+  }
+
 
 
 
@@ -98,7 +104,9 @@ app.controller('createGoalController', function($scope, $firebase, $location, $r
     dueDate: '',
     dueTime: '',
     description: '',
-    image: ''
+    image: '',
+    createdAt: null,
+    complete: false
   }
   var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
   var userRef = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals');
@@ -109,13 +117,14 @@ app.controller('createGoalController', function($scope, $firebase, $location, $r
     userRef.push($scope.newGoal);
           $rootScope.$apply(function() {
             console.log(ref.getAuth().facebook)
-            // FB.api('/me/feed', post, {message: body}, function(response){
-            //   if(!response || response.error){
-            //     console.log('Error', response.error)
-            //   }else{
-            //     console.log(response.id)
-            //   }
-            // })
+            var body = 'I did not meet my goal of: ' + newGoal
+            FB.api('/me/feed', post, {message: body}, function(response){
+              if(!response || response.error){
+                console.log('Error', response.error)
+              }else{
+                console.log(response.id)
+              }
+            })
             $location.path("/goals");
           }); 
   };
