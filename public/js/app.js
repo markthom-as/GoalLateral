@@ -107,28 +107,85 @@ app.controller('createGoalController', function($scope, $firebase, $location, $r
     image: '',
     createdAt: null,
     complete: false
-  }
+  };
   var ref = new Firebase('https://blinding-torch-8725.firebaseio.com/');
   var userRef = new Firebase('https://blinding-torch-8725.firebaseio.com/users/'+ref.getAuth().uid+'/goals');
 
   $scope.saveGoal = function(media){
+    console.log($scope.newGoal);
     if(!$scope.newGoal.image) return;
     $scope.newGoal.createdAt = Date.now();
     userRef.push($scope.newGoal);
-          $rootScope.$apply(function() {
-            console.log(ref.getAuth().facebook)
-            var body = 'I did not meet my goal of: ' + newGoal
-            FB.api('/me/feed', post, {message: body}, function(response){
-              if(!response || response.error){
-                console.log('Error', response.error)
-              }else{
-                console.log(response.id)
-              }
-            })
-            $location.path("/goals");
-          }); 
-  };
+    $rootScope.$apply(function() {
+    // console.log(ref.getAuth().facebook);
+    var imageData = $scope.newGoal.image; //base64 data mage
+    imageData = imageData.slice(23);
+    var mimeType = "image/jpeg";
+    try{
+        var blob = dataURItoBlob(imageData,mimeType);
+    }catch(e){
+        console.log(e);
+    }
+    var body = 'I did not meet my goal of: ' + $scope.newGoal.title;
+    var fd = new FormData();
+    fd.append("access_token",ref.getAuth().facebook.accessToken);
+    fd.append("source", blob);
+    fd.append("message",body);
+    // fd.append("scheduled_publish_time", )
 
+    var xhr=new XMLHttpRequest();
+    xhr.open( 'POST', 'https://graph.facebook.com/'+ ref.getAuth().facebook.id + '/photos?access_token=' +ref.getAuth().facebook.accessToken, true );
+    xhr.onload = xhr.onerror = function() {
+        console.log( xhr.responseText );
+    };
+    xhr.send(fd); 
+    $location.path("/goals")          
+            
+
+    function dataURItoBlob(dataURI,mime) {
+        var byteString = window.atob(dataURI);
+        var ia = new Uint8Array(byteString.length);
+
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        try {
+            return new Blob([ia], {type: mime});
+        } catch (e) {
+            var BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder;
+            var bb = new BlobBuilder();
+            bb.append(ia);
+            return bb.getBlob(mime);
+        }               
+    }
+              
+             // var blob = dataURItoBlob($scope.newGoal.image);
+             // var fd = new FormData();
+            //  var body = 'I did not meet my goal of: ' + $scope.newGoal.title;
+            //  fd.append('source', blob, 'img.jpg');
+            //  fd.append('access_token', ref.getAuth().facebook.accessToken);
+            //  fd.append('message', body)
+            //   var photo = {
+            //     method: 'POST',
+            //     url: 'https://graph.facebook.com/'+ref.getAuth().facebook.id+'/photos?access_token='+ref.getAuth().facebook.accessToken,
+            //     // params: {source: fd.source, message: body, access_token: ref.getAuth().facebook.accessToken}
+            //     data: fd
+            //     }; 
+            // console.log(fd);
+            // $http.post('https://graph.facebook.com/'+ref.getAuth().facebook.id+'/photos?access_token='+ref.getAuth().facebook.accessToken, fd).success($location.path("/goals"));
+            // });
+            
+            
+            // var config = {
+            //   method: 'POST',
+            //   url: 'http://graph.facebook.com/'+ref.getAuth().facebook.id+'/feed',
+            //   params: {message: body, access_token: ref.getAuth().facebook.accessToken, scheduled_publish_time: $scope.newGoal.dueDate }
+            // }
+            
+            // $http(config)
+            
+          }); 
+  }
 });
 
 app.controller('authCtrl', function($scope, $firebase, $location, $rootScope) {
@@ -156,7 +213,7 @@ app.controller('authCtrl', function($scope, $firebase, $location, $rootScope) {
             $location.path("/goals");
           });
         }
-      }, {scope: "publish_actions, public_profile"});
+      }, {scope: "publish_actions, public_profile, user_photos, manage_pages"});
     }
 
 
@@ -195,14 +252,12 @@ app.controller('menuController', function($scope, $firebase, $location, $rootSco
                 });
               console.log(err);
             })
-              
-          localStorage.authData = authData;
 
           $rootScope.$apply(function() {
             $location.path("/goals");
             $route.reload();
           });
         }
-      }, {scope: "publish_actions, public_profile"});
+      }, {scope: "publish_actions, public_profile, user_photos, manage_pages"});
     }
 });
